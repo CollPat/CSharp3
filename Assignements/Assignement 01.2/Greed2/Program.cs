@@ -1,74 +1,99 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// Class to roll the dice randomly (value type)
+class DiceRoller
+{
+    private static Random random = new Random();
+
+    // Method to roll 'n' dice (generates random numbers between 1 and 6)
+    public int[] RollDice(int numDice)
+    {
+        int[] dice = new int[numDice];
+        for (int i = 0; i < numDice; i++)
+        {
+            dice[i] = random.Next(1, 7); // Generates a random number between 1 and 6
+        }
+        return dice; // Value type (array of integers)
+    }
+}
+
+// Class to calculate the score (reference type)
+class ScoreCalculator
+{
+    // Method to calculate score based on dice roll (List<int> as reference type)
+    public int CalculateScore(List<int> dice)
+    {
+        int score = 0;
+
+        // Count occurrences of each die face (1 to 6)
+        int[] counts = new int[7];
+        foreach (int die in dice)
+        {
+            counts[die]++;
+        }
+
+        // Check for a straight (1,2,3,4,5,6)
+        if (dice.Count == 6 && counts.Skip(1).All(c => c == 1))
+        {
+            return 1200;
+        }
+
+        // Check for three pairs
+        if (dice.Count == 6 && counts.Where(c => c == 2).Count() == 3)
+        {
+            return 800;
+        }
+
+        // Handle scoring for multiples
+        for (int i = 1; i <= 6; i++)
+        {
+            if (counts[i] == 4)
+            {
+                score += i * 100 * 2; // Four-of-a-kind (multiply triple score by 2)
+            }
+            else if (counts[i] == 5)
+            {
+                score += i * 100 * 4; // Five-of-a-kind (multiply triple score by 4)
+            }
+            else if (counts[i] == 6)
+            {
+                score += i * 100 * 8; // Six-of-a-kind (multiply triple score by 8)
+            }
+            else if (counts[i] >= 3)
+            {
+                score += i * 100; // Regular triple
+            }
+        }
+
+        // Handle scoring for single ones and fives (leftover after triples)
+        score += counts[1] % 3 * 100; // Single ones
+        score += counts[5] % 3 * 50;  // Single fives
+
+        return score;
+    }
+}
+
+// Main class to call and demonstrate the code in the console
 class Program
 {
     static void Main()
     {
-        //existuje trida Random s metodou Next ktera ma ruzne zajimave parametry. Urcite by to slo pouzit na generaci 5 celych cisel v rozmezi 1 az 6 :)
-        int[] diceRoll = { 1, 1, 1, 5, 1 };
-        int score = CalculateScore(diceRoll);
+        DiceRoller roller = new DiceRoller();
+        ScoreCalculator calculator = new ScoreCalculator();
+
+        // Simulating rolling of 5 dice
+        int[] diceRoll = roller.RollDice(5);
+
+        // Converting value type (array) to reference type (List<int>)
+        List<int> diceList = diceRoll.ToList();
+
+        // Display the rolled dice
+        Console.WriteLine("Rolled dice: " + string.Join(", ", diceRoll));
+
+        // Calculate score
+        int score = calculator.CalculateScore(diceList);
         Console.WriteLine("Score: " + score);
-    }
-
-    static int CalculateScore(int[] dice)
-    {
-        int score = 0;
-
-
-        /*dobry napad pouzivat pocet kolikrat kostka byla hozena nez pole samotnych kostek, urcite to velmi zjednodusuje logiku,
-        existuji ale lepsi (mozna spise citelnejsi) zpusoby nez array - napr dictionary
-
-        dale najdes nastrel jak vytvorit slovnik (dictionary), dale to necham na tobe jestli to vylepsis ci ne :)
-        */
-        int[] counts = new int[7];
-        var countOfDices = new Dictionary<int, int>(); // mame prazdny slovnik kde je klic i hodnota typu int
-
-        foreach (int diceNumber in dice)
-        {
-            counts[diceNumber]++;
-            if (!countOfDices.ContainsKey(diceNumber)) //podivame se jestli slovnik obsahuje klik = cislo na kostce
-            {
-                countOfDices[diceNumber] = 1; //pokud ne tak tak tohle nam zajisti se slovnik bude obsahovat klic = cislo na konstce a hodnota bude 1
-            }
-            else
-            {
-                countOfDices[diceNumber] += 1; //pokud ano, tohle udela to ze k hodnote klice = cislo na kostce bude inkrementovane o 1
-            }
-        }
-        foreach (var d in countOfDices)
-        {
-            //tady mam kontrolu ze to funguje :)
-            Console.WriteLine($"dice {d.Key} is rolled {d.Value} times");
-        }
-
-        if (counts[1] >= 3)
-        {
-            score += 1000;
-            counts[1] -= 3;
-        }
-        score += counts[1] * 100;
-
-
-        if (counts[5] >= 3)
-        {
-            score += 500;
-            counts[5] -= 3;
-        }
-        score += counts[5] * 50;
-
-
-        for (int i = 2; i <= 6; i++)
-        {
-            if (counts[i] >= 3)
-            {
-                score += i * 100;
-            }
-        }
-
-        return score;
     }
 }
