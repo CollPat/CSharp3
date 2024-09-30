@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 
 // Class to roll the dice randomly (value type)
-class DiceRoller
+internal class DiceRoller
 {
     private static Random random = new Random();
 
@@ -20,7 +18,7 @@ class DiceRoller
 }
 
 // Class to calculate the score (reference type)
-class ScoreCalculator
+internal class ScoreCalculator
 {
     // Method to calculate score based on dice roll (List<int> as reference type)
     public int CalculateScore(List<int> dice)
@@ -76,9 +74,9 @@ class ScoreCalculator
 }
 
 // Main class to call and demonstrate the code in the console
-class Program
+internal class Program
 {
-    static void Main()
+    public static void Main()
     {
         DiceRoller roller = new DiceRoller();
         ScoreCalculator calculator = new ScoreCalculator();
