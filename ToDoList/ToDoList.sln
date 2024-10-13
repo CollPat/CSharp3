@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4CE7AFE4-890F-4153-965A-0556567B0745}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C865B60B-50A4-4351-A4C8-831ACCF1E381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.WebApi", "src\ToDoList.WebApi\ToDoList.WebApi.csproj", "{0C45958A-61ED-4EEB-B7A3-C84856CF218F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.WebApi", "src\ToDoList.WebApi\ToDoList.WebApi.csproj", "{4B171F48-0F79-4371-86FA-6B6AFC283140}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Domain", "src\ToDoList.Domain\ToDoList.Domain.csproj", "{C42DC545-2C3D-4929-B60B-C2E53596EE17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,12 +18,17 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0C45958A-61ED-4EEB-B7A3-C84856CF218F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C45958A-61ED-4EEB-B7A3-C84856CF218F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C45958A-61ED-4EEB-B7A3-C84856CF218F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C45958A-61ED-4EEB-B7A3-C84856CF218F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B171F48-0F79-4371-86FA-6B6AFC283140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B171F48-0F79-4371-86FA-6B6AFC283140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B171F48-0F79-4371-86FA-6B6AFC283140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B171F48-0F79-4371-86FA-6B6AFC283140}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C42DC545-2C3D-4929-B60B-C2E53596EE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42DC545-2C3D-4929-B60B-C2E53596EE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C42DC545-2C3D-4929-B60B-C2E53596EE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C42DC545-2C3D-4929-B60B-C2E53596EE17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0C45958A-61ED-4EEB-B7A3-C84856CF218F} = {4CE7AFE4-890F-4153-965A-0556567B0745}
+		{4B171F48-0F79-4371-86FA-6B6AFC283140} = {C865B60B-50A4-4351-A4C8-831ACCF1E381}
+		{C42DC545-2C3D-4929-B60B-C2E53596EE17} = {C865B60B-50A4-4351-A4C8-831ACCF1E381}
 	EndGlobalSection
 EndGlobal
