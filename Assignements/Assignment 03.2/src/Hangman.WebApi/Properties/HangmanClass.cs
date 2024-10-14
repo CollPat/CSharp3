@@ -13,6 +13,7 @@ namespace Hangman.WebApi.Properties
         private int maxIncorrectGuesses;
         private bool gameInProgress;
 
+        //vidi to jako metodu, ne konstruktor - muselo by se to jmenova HangmanClass
         public Hangman(string secretWord, int maxIncorrectGuesses)
         {
             this.secretWord = secretWord.ToUpper();

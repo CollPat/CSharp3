@@ -10,7 +10,7 @@ namespace Hangman.WebApi.Properties
     // Vlastnosť na kontrolu, či hra stále prebieha
         public bool GameInProgress
         {
-            get { return gameInProgress; }
+            get { return gameInProgress; } //tohle zije v HangmanClass, tyka se to gameInProgress,correctGuesses,incorrectGuesses,secretWord,maxIncorrectGuesses
         }
 
         // Metóda na spracovanie hádaného písmena
@@ -53,7 +53,7 @@ namespace Hangman.WebApi.Properties
         // Pomocná metóda na zobrazenie aktuálneho stavu slova
         public string DisplayWord()
         {
-            var display = new StringBuilder();
+            var display = new StringBuilder(); //chybi usign System.Text
             foreach (char c in secretWord)
             {
                 if (correctGuesses.Contains(c))
