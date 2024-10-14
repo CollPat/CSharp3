@@ -33,8 +33,19 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            if (items == null || items.Count == 0)
-            return NotFound(); // 404 Not Found
+            /*
+            Prehlednejsi formatovani, C# sice formatovani bez {} zavorek u jednoduchych if statementu umoznuje, ovsem good practise je podle me to spise psat takto
+            hlavni duvody:
+            1. prehlednost - kdyz projizdis ocima kod, tak je jasne poznat blok kodu v ifu
+            2. "bezpecnost" - pod timto se muze vlivem nepozornosti schovat spousta bugu :) (napr kdyz pridam dalsi radek do ifu tak si nemusim v rychlosti uvedomit ze
+            uz nespada do if statement) -> predchazim potencionalnim bugum
+
+            Ale je to takove kontroverzni tema, nekdo to miluje, nekdo ne, nechvavam na tobe. Tuto cast kodu jsem zmenil :)
+            */
+            if (items == null || items.Count == 0) //takto zadani neznelo, NotFound() vracime pouze pokud je items == null
+            {
+                return NotFound(); // 404 Not Found
+            }
 
             var response = items.Select(ToDoItemGetResponseDto.FromDomain).ToList();
             return Ok(response); // 200 OK
@@ -51,7 +62,13 @@ public class ToDoItemsController : ControllerBase
         try
         {
             var item = items.Find(x => x.ToDoItemId == toDoItemId);
-            if (item == null)
+
+            //muzeme to zkratit na mensi pocet radku pomoci ternarniho operatoru ?:
+            //jak to vypada:
+            //podminka ? splnena podminka : nesplena podminka
+            //return (items is null) ?  NotFound() : Ok(ToDoItemGetResponseDto.FromDomain(item));
+
+            if (item == null) //opet {} ale nechavam na tobe :)
                 return NotFound(); // 404 Not Found
 
             var response = ToDoItemGetResponseDto.FromDomain(item);
@@ -66,10 +83,11 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public IActionResult UpdateById(int toDoItemId, [FromBody] ToDoItemUpdateRequestDto request)
     {
+        //odsazeni je spatne, pravdepodobne to vzniklo prekopirovavanim odhaduju :) Kompiler to prechrousta ale spatne se to cte
        try
     {
         var index = items.FindIndex(x => x.ToDoItemId == toDoItemId);
-        if (index == -1)
+        if (index == -1) //same story with {} :)
             return NotFound(); // 404 Not Found
 
         var updatedItem = request.ToDomain();
@@ -87,6 +105,7 @@ public class ToDoItemsController : ControllerBase
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
+        //opet odsazeni :)
         try
     {
         var item = items.Find(x => x.ToDoItemId == toDoItemId);
