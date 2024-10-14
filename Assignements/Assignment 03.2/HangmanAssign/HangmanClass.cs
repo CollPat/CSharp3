@@ -1,19 +1,28 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Hangman.WebApi.Properties
 {
-    public class HangmanMethods
+    public class HangmanClass
     {
-    // Vlastnosť na kontrolu, či hra stále prebieha
-        public bool GameInProgress
+        private string secretWord;
+        private HashSet<char> correctGuesses;
+        private HashSet<char> incorrectGuesses;
+        private int maxIncorrectGuesses;
+        private bool gameInProgress;
+
+        public HangmanClass(string secretWord, int maxIncorrectGuesses)
         {
-            get { return gameInProgress; } //tohle zije v HangmanClass, tyka se to gameInProgress,correctGuesses,incorrectGuesses,secretWord,maxIncorrectGuesses
+            this.secretWord = secretWord.ToUpper();
+            this.maxIncorrectGuesses = maxIncorrectGuesses;
+            correctGuesses = new HashSet<char>();
+            incorrectGuesses = new HashSet<char>();
+            gameInProgress = true;
         }
 
-        // Metóda na spracovanie hádaného písmena
         public string Guess(char letter)
         {
             letter = char.ToUpper(letter);
@@ -50,10 +59,10 @@ namespace Hangman.WebApi.Properties
             }
         }
 
-        // Pomocná metóda na zobrazenie aktuálneho stavu slova
+
         public string DisplayWord()
         {
-            var display = new StringBuilder(); //chybi usign System.Text
+            var display = new StringBuilder();
             foreach (char c in secretWord)
             {
                 if (correctGuesses.Contains(c))
@@ -68,7 +77,6 @@ namespace Hangman.WebApi.Properties
             return display.ToString().Trim();
         }
 
-        // Pomocná metóda na kontrolu, či boli uhádnuté všetky písmená
         private bool AllLettersGuessed()
         {
             foreach (char c in secretWord)
@@ -81,10 +89,10 @@ namespace Hangman.WebApi.Properties
             return true;
         }
 
-        // Zobrazenie zoznamu nesprávnych hádaní
         public string DisplayIncorrectGuesses()
         {
             return $"Incorrect guesses: {string.Join(", ", incorrectGuesses)}";
         }
+
     }
 }
