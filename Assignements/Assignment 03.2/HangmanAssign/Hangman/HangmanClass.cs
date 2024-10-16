@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hangman.WebApi.Properties
+namespace Hangman
 {
     public class HangmanClass
     {
@@ -12,7 +12,15 @@ namespace Hangman.WebApi.Properties
         private HashSet<char> correctGuesses;
         private HashSet<char> incorrectGuesses;
         private int maxIncorrectGuesses;
-        private bool gameInProgress;
+
+        /*co tohle dela, budu mit property jmenem GameInProgres ktera ma public get = dokazu se na tuto hodnotu doklikat a precist si ji
+        //i.e. var game = new HangmanClass("",1);
+        game.GameInProgress
+
+        a zaroven ma privatni set = dokazu zmenit hodnotu pouze v teto tride, ne mimo ni
+        i.e. game.GameInProgress = false nedokazu udelat, jelikoz to ma privatni set
+        */
+        public bool GameInProgress { get; private set; }
 
         public HangmanClass(string secretWord, int maxIncorrectGuesses)
         {
@@ -20,7 +28,7 @@ namespace Hangman.WebApi.Properties
             this.maxIncorrectGuesses = maxIncorrectGuesses;
             correctGuesses = new HashSet<char>();
             incorrectGuesses = new HashSet<char>();
-            gameInProgress = true;
+            GameInProgress = true;
         }
 
         public string Guess(char letter)
@@ -42,7 +50,7 @@ namespace Hangman.WebApi.Properties
                 correctGuesses.Add(letter);
                 if (AllLettersGuessed())
                 {
-                    gameInProgress = false;
+                    GameInProgress = false;
                     return $"Congratulations! You've won. The word was {secretWord}.";
                 }
                 return DisplayWord();
@@ -52,7 +60,7 @@ namespace Hangman.WebApi.Properties
                 incorrectGuesses.Add(letter);
                 if (incorrectGuesses.Count >= maxIncorrectGuesses)
                 {
-                    gameInProgress = false;
+                    GameInProgress = false;
                     return $"Game Over! You've lost. The word was {secretWord}.";
                 }
                 return $"Incorrect guess. You have {maxIncorrectGuesses - incorrectGuesses.Count} guesses left.";
