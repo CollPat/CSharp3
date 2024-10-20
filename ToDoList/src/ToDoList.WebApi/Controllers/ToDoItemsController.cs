@@ -18,16 +18,22 @@ public class ToDoItemsController : ControllerBase
         var item = request.ToDomain();
         try
         {
+            if (items.Any(o => o.ToDoItemId == item.ToDoItemId))
+            {
+                throw new Exception("Duplicate item ID");
+            }
+
             item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
             items.Add(item);
         }
         catch (Exception ex)
         {
-            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); // 500 Internal Server Error
+            Console.WriteLine($"Error: {ex.Message}");
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
 
-        // respond with the created item and its location
-        return CreatedAtAction(nameof(ReadById), new { toDoItemId = item.ToDoItemId }, item); // 201 Created
+
+        return CreatedAtAction(nameof(ReadById), new { toDoItemId = item.ToDoItemId }, item);
     }
 
     [HttpGet]
@@ -38,15 +44,15 @@ public class ToDoItemsController : ControllerBase
 
             if (items == null)
             {
-                return NotFound(); // 404 Not Found
+                return NotFound();
             }
 
             var response = items.Select(ToDoItemGetResponseDto.FromDomain).ToList();
-            return Ok(response); // 200 OK
+            return Ok(response);
         }
         catch (Exception ex)
         {
-            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); // 500 Internal Server Error
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -62,7 +68,7 @@ public class ToDoItemsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); // 500 Internal Server Error
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -70,45 +76,45 @@ public class ToDoItemsController : ControllerBase
     public IActionResult UpdateById(int toDoItemId, [FromBody] ToDoItemUpdateRequestDto request)
     {
 
-    try
-    {
-        var index = items.FindIndex(x => x.ToDoItemId == toDoItemId);
-        if (index == -1)
+        try
         {
-            return NotFound(); // 404 Not Found
+            var index = items.FindIndex(x => x.ToDoItemId == toDoItemId);
+            if (index == -1)
+            {
+                return NotFound();
+            }
+
+            var updatedItem = request.ToDomain();
+            updatedItem.ToDoItemId = toDoItemId;
+            items[index] = updatedItem;
+
+            return NoContent();
         }
-
-        var updatedItem = request.ToDomain();
-        updatedItem.ToDoItemId = toDoItemId;
-        items[index] = updatedItem;
-
-        return NoContent(); // 204 No Content
-    }
-    catch (Exception ex)
-    {
-        return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); // 500 Internal Server Error
-    }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
+        }
     }
 
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
 
-    try
-    {
-        var item = items.Find(x => x.ToDoItemId == toDoItemId);
-        if (item == null)
+        try
         {
-            return NotFound(); // 404 Not Found
+            var item = items.Find(x => x.ToDoItemId == toDoItemId);
+            if (item == null)
+            {
+                return NotFound();
 
+            }
+
+            items.Remove(item);
+            return NoContent();
         }
-
-        items.Remove(item);
-        return NoContent(); // 204 No Content
-    }
-    catch (Exception ex)
-    {
-        return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); // 500 Internal Server Error
-    }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
+        }
     }
 }
