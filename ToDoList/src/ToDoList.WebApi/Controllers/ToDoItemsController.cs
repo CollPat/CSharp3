@@ -1,4 +1,6 @@
 namespace ToDoList.WebApi.Controllers;
+
+using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
@@ -7,7 +9,7 @@ using ToDoList.Domain.Models;
 [Route("api/[controller]")]
 public class ToDoItemsController : ControllerBase
 {
-    private static readonly List<ToDoItem> items = [];
+    public static readonly List<ToDoItem> items = [];
 
     [HttpPost]
     public IActionResult Create(ToDoItemsCreateRequestDto request)
@@ -29,7 +31,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Read()
+    public ActionResult<IEnumerable<ToDoItemGetResponseDto>> Read()
     {
         try
         {
