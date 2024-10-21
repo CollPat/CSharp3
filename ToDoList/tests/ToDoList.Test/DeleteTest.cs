@@ -9,14 +9,18 @@ using Xunit;
 
 namespace ToDoList.Test;
 
-    public class DeleteTest
+public class DeleteTest
+{
+    [Fact]
+    public void Delete_ItemById_RemovesItem_WhenIdIsValid()
     {
-        [Fact]
-        public void Delete_ItemById_RemovesItem_WhenIdIsValid()
-    {
+        //test opet neni nezavisly
+
         // Arrange
         var controller = new ToDoItemsController();
         var toDoItem = new ToDoItem { ToDoItemId = 1 };
+
+        ToDoItemsController.items = [];
         ToDoItemsController.items.Add(toDoItem);
 
         // Act
@@ -27,6 +31,8 @@ namespace ToDoList.Test;
         Assert.NotNull(noContentResult);
         Assert.IsType<NoContentResult>(noContentResult);
         Assert.Empty(ToDoItemsController.items);
+
+        //odchytil by nam tento test pripad ze DeleteById maze cely obsah items? ;)
     }
 
     [Fact]
@@ -43,5 +49,5 @@ namespace ToDoList.Test;
         Assert.NotNull(notFoundResult);
         Assert.IsType<NotFoundResult>(notFoundResult);
     }
-    }
+}
 
