@@ -13,8 +13,11 @@ public class GetTest
     [Fact]
     public void Get_AllItems_ReturnsAllItems()
     {
+        //opet test neni nezavisly - me napriklad konci failem kdyz spustim vsechny testy
+
         // Arrange
         var controller = new ToDoItemsController();
+        ToDoItemsController.items = []; //a je to :)
         var toDoItem = new ToDoItem { ToDoItemId = 1 };
         ToDoItemsController.items.Add(toDoItem);
 
@@ -30,11 +33,14 @@ public class GetTest
         Assert.Single(returnValue);
     }
 
+
+    //ReadById a Read jsou dve samostatne metody, lepsi by teda bylo mit 2 samostatne soubory s test, jeden pro Read metodu a jeden pro ReadById
     [Fact]
     public void Get_ItemById_ReturnsItem_WhenIdIsValid()
     {
         // Arrange
         var controller = new ToDoItemsController();
+        ToDoItemsController.items = []; //opet :)
         var toDoItem = new ToDoItem { ToDoItemId = 1 };
         ToDoItemsController.items.Add(toDoItem);
 
@@ -48,6 +54,8 @@ public class GetTest
         var returnValue = okResult.Value as ToDoItemGetResponseDto;
         Assert.NotNull(returnValue);
         Assert.Equal(1, returnValue.Id);
+
+        //mohli bychom jeste testovat ze to vraci nezmenene Name,Description,IsCompleted
     }
 
     [Fact]

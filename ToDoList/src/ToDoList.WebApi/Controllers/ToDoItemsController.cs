@@ -9,7 +9,7 @@ using ToDoList.Domain.Models;
 [Route("api/[controller]")]
 public class ToDoItemsController : ControllerBase
 {
-    public static readonly List<ToDoItem> items = [];
+    public static List<ToDoItem> items = [];
 
     [HttpPost]
     public IActionResult Create(ToDoItemsCreateRequestDto request)
@@ -18,6 +18,7 @@ public class ToDoItemsController : ControllerBase
         var item = request.ToDomain();
         try
         {
+            //vidim ze se pokousis o vyvolani InternalServerError, ale tato vyjimka vyskoci jen kdyz v items je ToDoItem co ma id = 0
             if (items.Any(o => o.ToDoItemId == item.ToDoItemId))
             {
                 throw new Exception("Duplicate item ID");
