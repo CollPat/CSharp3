@@ -6,7 +6,7 @@ using ToDoList.Domain.Models;
 public class ToDoItemsContext : DbContext
 {
     private readonly string connectionstring;
-    public ToDoItemsContext(string connectionstring= "Data source=../../data/localdb.db")
+    public ToDoItemsContext(string connectionstring= "Data source=../data/localdb.db")
     {
         this.connectionstring = connectionstring;
     }

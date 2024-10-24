@@ -12,7 +12,6 @@ public class ToDoItemsController : ControllerBase
 
 
 {
-    public static List<ToDoItem> items = [];
     private readonly ToDoItemsContext context;
     public ToDoItemsController(ToDoItemsContext context)
     {
@@ -26,14 +25,10 @@ public class ToDoItemsController : ControllerBase
         var item = request.ToDomain();
         try
         {
-            //vidim ze se pokousis o vyvolani InternalServerError, ale tato vyjimka vyskoci jen kdyz v items je ToDoItem co ma id = 0
-            if (items.Any(o => o.ToDoItemId == item.ToDoItemId))
+            if (context.ToDoItems.Any(o => o.ToDoItemId == item.ToDoItemId))
             {
                 throw new Exception("Duplicate item ID");
             }
-
-           // item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
-            //items.Add(item);
 
             context.ToDoItems.Add(item);
             context.SaveChanges();
@@ -54,12 +49,7 @@ public class ToDoItemsController : ControllerBase
         try
         {
 
-            if (items == null)
-            {
-                return NotFound();
-            }
-
-            var response = items.Select(ToDoItemGetResponseDto.FromDomain).ToList();
+            var response = context.ToDoItems.Select(ToDoItemGetResponseDto.FromDomain).ToList();
             return Ok(response);
         }
         catch (Exception ex)
@@ -73,9 +63,9 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            var item = items.Find(x => x.ToDoItemId == toDoItemId);
+            var item = context.ToDoItems.Find(toDoItemId);
 
-            return item == null ? NotFound() : Ok(ToDoItemGetResponseDto.FromDomain(item));
+            return item == null ? NotFound() : Ok(context.ToDoItems.Select(ToDoItemGetResponseDto.FromDomain));
 
         }
         catch (Exception ex)
@@ -90,16 +80,18 @@ public class ToDoItemsController : ControllerBase
 
         try
         {
-            var index = items.FindIndex(x => x.ToDoItemId == toDoItemId);
-            if (index == -1)
+            var item = context.ToDoItems.Find(toDoItemId);
+            if (item == null)
             {
                 return NotFound();
             }
 
             var updatedItem = request.ToDomain();
-            updatedItem.ToDoItemId = toDoItemId;
-            items[index] = updatedItem;
+            item.Name = updatedItem.Name;
+            item.Description = updatedItem.Description;
 
+            context.ToDoItems.Update(item);
+            context.SaveChanges();
             return NoContent();
         }
         catch (Exception ex)
@@ -114,14 +106,15 @@ public class ToDoItemsController : ControllerBase
 
         try
         {
-            var item = items.Find(x => x.ToDoItemId == toDoItemId);
+            var item = context.ToDoItems.Find(toDoItemId);
             if (item == null)
             {
                 return NotFound();
 
             }
 
-            items.Remove(item);
+            context.ToDoItems.Remove(item);
+            context.SaveChanges();
             return NoContent();
         }
         catch (Exception ex)
