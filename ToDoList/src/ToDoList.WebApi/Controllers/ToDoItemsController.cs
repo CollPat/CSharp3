@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,11 +13,17 @@ public class ToDoItemsController : ControllerBase
 
 
 {
-    private readonly ToDoItemsContext context;
+
+    private readonly IRepository<ToDoItem> repository;
     public ToDoItemsController(ToDoItemsContext context)
     {
-        this.context = context;
+        this.repository = repository;
     }
+    public ToDoItemsController(IRepository<ToDoItem> repository)
+    {
+        this.repository = repository;
+    }
+
 
     [HttpPost]
     public IActionResult Create(ToDoItemsCreateRequestDto request)
@@ -25,13 +32,8 @@ public class ToDoItemsController : ControllerBase
         var item = request.ToDomain();
         try
         {
-            if (context.ToDoItems.Any(o => o.ToDoItemId == item.ToDoItemId))
-            {
-                throw new Exception("Duplicate item ID");
-            }
+            repository.Create(item);
 
-            context.ToDoItems.Add(item);
-            context.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -49,7 +51,7 @@ public class ToDoItemsController : ControllerBase
         try
         {
 
-            var response = context.ToDoItems.Select(ToDoItemGetResponseDto.FromDomain).ToList();
+            var response = repository.GetAll().Select(ToDoItemGetResponseDto.FromDomain).ToList();
             return Ok(response);
         }
         catch (Exception ex)
@@ -63,9 +65,9 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            var item = context.ToDoItems.Find(toDoItemId);
+            var item = repository.GetById(toDoItemId);
 
-            return item == null ? NotFound() : Ok(context.ToDoItems.Select(ToDoItemGetResponseDto.FromDomain));
+            return item == null ? NotFound() : Ok(ToDoItemGetResponseDto.FromDomain(item));
 
         }
         catch (Exception ex)
@@ -80,7 +82,7 @@ public class ToDoItemsController : ControllerBase
 
         try
         {
-            var item = context.ToDoItems.Find(toDoItemId);
+            var item = repository.GetById(toDoItemId);
             if (item == null)
             {
                 return NotFound();
@@ -90,8 +92,7 @@ public class ToDoItemsController : ControllerBase
             item.Name = updatedItem.Name;
             item.Description = updatedItem.Description;
 
-            context.ToDoItems.Update(item);
-            context.SaveChanges();
+            repository.Update(item);
             return NoContent();
         }
         catch (Exception ex)
@@ -106,15 +107,14 @@ public class ToDoItemsController : ControllerBase
 
         try
         {
-            var item = context.ToDoItems.Find(toDoItemId);
+            var item = repository.GetById(toDoItemId);
             if (item == null)
             {
                 return NotFound();
 
             }
 
-            context.ToDoItems.Remove(item);
-            context.SaveChanges();
+            repository.Delete(item);
             return NoContent();
         }
         catch (Exception ex)
@@ -122,4 +122,6 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
     }
+
+    public object Create(ToDoItemCreateRequestDto request) => throw new NotImplementedException();
 }
