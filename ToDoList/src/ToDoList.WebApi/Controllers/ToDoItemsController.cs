@@ -15,10 +15,6 @@ public class ToDoItemsController : ControllerBase
 {
 
     private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(ToDoItemsContext context) //tento konstruktor potrebujeme odstranit aby Web API fungovalo
-    {
-        this.repository = repository;
-    }
     public ToDoItemsController(IRepository<ToDoItem> repository)
     {
         this.repository = repository;
@@ -63,6 +59,7 @@ public class ToDoItemsController : ControllerBase
     [HttpGet("{toDoItemId:int}")]
     public IActionResult ReadById(int toDoItemId)
     {
+        
         try
         {
             var item = repository.GetById(toDoItemId);

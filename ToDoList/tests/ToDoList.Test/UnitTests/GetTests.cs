@@ -17,8 +17,8 @@ public class GetTests
         var toDoItem = new ToDoItem
         {
             ToDoItemId = 1,
-            Name = "Jmeno",
-            Description = "Popis",
+            Name = "Test Name",
+            Description = "Test Decription",
             IsCompleted = false
         };
 

@@ -9,7 +9,7 @@ using ToDoList.WebApi.Controllers;
 public class DeleteTests
 {
     [Fact]
-    public void Delete_ValidId_ReturnsNoContent()
+    public void Delete_ValidItemId_ReturnsNoContent()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -22,12 +22,17 @@ public class DeleteTests
             Description = "Popis",
             IsCompleted = false
         };
+        repositoryMock.GetById(Arg.Any<int>()).Returns(toDoItem);
 
         // Act
         var result = controller.DeleteById(toDoItem.ToDoItemId);
 
+
         // Assert
         Assert.IsType<NoContentResult>(result);
+        repositoryMock.Received(1).GetById(toDoItem.ToDoItemId);
+        repositoryMock.Received(1).Delete(toDoItem);
+        
     }
 
     [Fact]
