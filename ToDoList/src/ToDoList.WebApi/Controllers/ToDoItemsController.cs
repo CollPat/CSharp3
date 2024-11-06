@@ -15,7 +15,7 @@ public class ToDoItemsController : ControllerBase
 {
 
     private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(ToDoItemsContext context)
+    public ToDoItemsController(ToDoItemsContext context) //tento konstruktor potrebujeme odstranit aby Web API fungovalo
     {
         this.repository = repository;
     }
