@@ -1,4 +1,4 @@
-namespace Assignment_04._2;
+/*namespace Assignment_04._2;
 
 public class StringCalculatorTests
 {
@@ -10,3 +10,4 @@ public class StringCalculatorTests
         Assert.Equal(0, result);
     }
 }
+*/

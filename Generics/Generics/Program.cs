@@ -1,37 +1,36 @@
-﻿IEnumerable<string> string = ["Prvni string", "Druhy string"];
+﻿IEnumerable<string> strings = ["Prvni string", "Druhy string"];
 IEnumerable<integers> integers = [10, 15, -1];
 var stringoveIntegery = integers.Select(1=> 1.ToString);
-WriteToConsole(string);
+WriteToConsole(strings);
 WriteToConsole(integers);
 
-void WriteToConsole<T>(IEnurable<T> list) where T : IComparable<T>, IEquatable<T>
+static void WriteToConsole<T>(IEnurable<T> list) where T : IComparable<T>, IEquatable<T>
 {
     foreach (var s in list)
     {
-        WriteToConsole.Write(s.ToString() +" ");
-        s.CompareTo
+        Console.Write(s.ToString() + " ");
     }
 
     Console.WriteLine();
 }
 
-T Max<T>(T item1, item 2) where T : IComparable<T>
+static T Max<T>(T item1, T item2) where T : IComparable<T>
 {
     return item1.CompareTo(item2) > 0 ? item1 : item2;
 }
 
-T MaxCollections<T>(IEnumerable<T> collections) where T : IComparable<T>
+static T MaxCollections<T>(IEnumerable<T> collections) where T : IComparable<T>
 {
-    if (collections == null || collections.Any)
+    if (collections == null || !collections.Any())
     {
-        return new ArgumentException("The collection is empty or null");
+        throw new ArgumentException("The collection is empty or null");
     }
 
     var max = collections.First();
 
     foreach (T item in collections.Skip(1))
     {
-        if (item.item.CompareTo(max) > 0)
+        if (item.CompareTo(max) > 0)
         {
             max = item;
         }
@@ -40,10 +39,16 @@ T MaxCollections<T>(IEnumerable<T> collections) where T : IComparable<T>
     return max;
 }
 
-bool IsDistinct<T>(IEnumerable<T> collection)
+static bool IsDistinct<T>(IEnumerable<T> collection)
 {
-    Hashset<T> = [];
-    seen.Add
-    
+    Hashset<T> seen = new Hashset<T>();
+    foreach (var item in collection);
+    {
+        if(!seen.Add(item))
+        {
+            return false;
+        }
+    }
+
     return true;
 }
