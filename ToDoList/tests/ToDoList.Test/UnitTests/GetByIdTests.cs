@@ -24,8 +24,9 @@ public class GetByIdTests
             IsCompleted = false
         };
 
+        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
         // Act
-        var result = controller.ReadById(toDoItem.ToDoItemId);
+        var result = controller.GetById(toDoItem.ToDoItemId);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -47,7 +48,7 @@ public class GetByIdTests
         var invalidId = -1;
 
         // Act
-        var result = controller.ReadById(invalidId);
+        var result = controller.GetById(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);

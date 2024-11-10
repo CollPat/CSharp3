@@ -38,7 +38,7 @@ public class ToDoItemsController : ControllerBase
         }
 
 
-        return CreatedAtAction(nameof(ReadById), new { toDoItemId = item.ToDoItemId }, item);
+        return CreatedAtAction(nameof(GetById), new { toDoItemId = item.ToDoItemId }, item);
     }
 
     [HttpGet]
@@ -48,6 +48,12 @@ public class ToDoItemsController : ControllerBase
         {
 
             var response = repository.GetAll().Select(ToDoItemGetResponseDto.FromDomain).ToList();
+
+            if (!response.Any())
+            {
+                return NotFound();
+            }
+
             return Ok(response);
         }
         catch (Exception ex)
@@ -57,9 +63,9 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet("{toDoItemId:int}")]
-    public IActionResult ReadById(int toDoItemId)
+    public IActionResult GetById(int toDoItemId)
     {
-        
+
         try
         {
             var item = repository.GetById(toDoItemId);
@@ -119,6 +125,4 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
     }
-
-    public object Create(ToDoItemCreateRequestDto request) => throw new NotImplementedException();
 }

@@ -2,6 +2,7 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi.Controllers;
@@ -22,20 +23,22 @@ public class GetTests
             IsCompleted = false
         };
 
+        repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem });
+
         // Act
         var result = controller.Read();
-        var resultResult = result.Result;
-        var value = result.GetValue();
 
         // Assert
-        Assert.IsType<OkObjectResult>(resultResult);
-        Assert.NotNull(value);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var value = Assert.IsAssignableFrom<IEnumerable<ToDoItemGetResponseDto>>(okResult.Value);
 
         var firstItem = value.First();
         Assert.Equal(toDoItem.ToDoItemId, firstItem.Id);
         Assert.Equal(toDoItem.Description, firstItem.Description);
         Assert.Equal(toDoItem.IsCompleted, firstItem.IsCompleted);
         Assert.Equal(toDoItem.Name, firstItem.Name);
+
+        repositoryMock.Received(1).GetAll();
     }
 
     [Fact]
@@ -44,12 +47,14 @@ public class GetTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
+        repositoryMock.GetAll().Returns(new List<ToDoItem>());
 
         // Act
         var result = controller.Read();
-        var resultResult = result.Result;
 
         // Assert
-        Assert.IsType<NotFoundResult>(resultResult);
+        Assert.IsType<NotFoundResult>(result.Result);
+
+        repositoryMock.Received(1).GetAll();
     }
 }

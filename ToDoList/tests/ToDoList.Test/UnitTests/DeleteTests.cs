@@ -32,7 +32,7 @@ public class DeleteTests
         Assert.IsType<NoContentResult>(result);
         repositoryMock.Received(1).GetById(toDoItem.ToDoItemId);
         repositoryMock.Received(1).Delete(toDoItem);
-        
+
     }
 
     [Fact]
@@ -43,11 +43,14 @@ public class DeleteTests
         var controller = new ToDoItemsController(repositoryMock);
 
         var invalidId = -1;
+        repositoryMock.GetById(Arg.Is(invalidId)).Returns((ToDoItem)null);
 
         // Act
         var result = controller.DeleteById(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+        repositoryMock.Received(1).GetById(invalidId);
+        repositoryMock.DidNotReceive().Delete(Arg.Any<ToDoItem>());
     }
 }
