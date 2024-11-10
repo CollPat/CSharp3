@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using ToDoList.Domain.DTOs;
@@ -11,7 +12,7 @@ public class PostUnitTests
 {
 
     [Fact]
-    public void Post_UnhandledRequest_ReturnsNewItem()
+    public void Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -33,6 +34,30 @@ public class PostUnitTests
         Assert.Equal(request.Description, value.Description);
         Assert.Equal(request.IsCompleted, value.IsCompleted);
         Assert.Equal(request.Name, value.Name);
+    }
+
+    [Fact]
+    public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { throw new Exception("Unhandled exception"); });
+
+        var controller = new ToDoItemsController(repositoryMock);
+        var request = new ToDoItemsCreateRequestDto(
+            Name: "Jmeno",
+            Description: "Popis",
+            IsCompleted: false
+        );
+
+        // Act
+        var result = controller.Create(request);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal("Unhandled exception", problemDetails.Detail);
     }
 }
 

@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using ToDoList.Domain.DTOs;
@@ -57,4 +58,24 @@ public class GetTests
 
         repositoryMock.Received(1).GetAll();
     }
+
+    [Fact]
+    public void Get_ReadUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        repositoryMock.GetAll().Returns(x => { throw new Exception("Unhandled exception"); });
+
+        var controller = new ToDoItemsController(repositoryMock);
+
+        // Act
+        var result = controller.Read();
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal("Unhandled exception", problemDetails.Detail);
+    }
+
 }

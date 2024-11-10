@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using ToDoList.Domain.DTOs;
@@ -19,16 +20,16 @@ public class PutTests
         var toDoItem = new ToDoItem
         {
             ToDoItemId = 1,
-            Name = "Jmeno",
-            Description = "Popis",
+            Name = "Name",
+            Description = "Description",
             IsCompleted = false
         };
 
-       repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
 
         var request = new ToDoItemUpdateRequestDto(
-            Name: "Jine jmeno",
-            Description: "Jiny popis",
+            Name: "Another name",
+            Description: "Different description",
             IsCompleted: true
         );
 
@@ -43,12 +44,12 @@ public class PutTests
     public void Put_InvalidId_ReturnsNotFound()
     {
         // Arrange
-       var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var request = new ToDoItemUpdateRequestDto(
-            Name: "Jine jmeno",
-            Description: "Jiny popis",
+            Name: "Another name",
+            Description: "Different description",
             IsCompleted: true
         );
 
@@ -60,5 +61,39 @@ public class PutTests
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public void Put_UpdateByIdUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
+
+        var toDoItem = new ToDoItem
+        {
+            ToDoItemId = 1,
+            Name = "Name",
+            Description = "Description",
+            IsCompleted = false
+        };
+
+        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Do(_ => { throw new Exception("Unhandled exception"); });
+
+        var request = new ToDoItemUpdateRequestDto(
+            Name: "Another Name",
+            Description: "Different description",
+            IsCompleted: true
+        );
+
+        // Act
+        var result = controller.UpdateById(toDoItem.ToDoItemId, request);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal("Unhandled exception", problemDetails.Detail);
     }
 }

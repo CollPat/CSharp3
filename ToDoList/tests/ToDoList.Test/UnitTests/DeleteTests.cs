@@ -2,6 +2,7 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi.Controllers;
@@ -53,4 +54,25 @@ public class DeleteTests
         repositoryMock.Received(1).GetById(invalidId);
         repositoryMock.DidNotReceive().Delete(Arg.Any<ToDoItem>());
     }
+
+    [Fact]
+    public void Delete_UnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
+
+        var toDoItemId = 1;
+        repositoryMock.GetById(Arg.Any<int>()).Throws(new Exception("Unhandled exception"));
+
+        // Act
+        var result = controller.DeleteById(toDoItemId);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+        repositoryMock.Received(1).GetById(toDoItemId);
+        repositoryMock.DidNotReceive().Delete(Arg.Any<ToDoItem>());
+    }
+
 }

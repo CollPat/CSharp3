@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using ToDoList.Domain.DTOs;
@@ -53,4 +54,25 @@ public class GetByIdTests
         // Assert
         Assert.IsType<NotFoundResult>(result);
     }
+
+    [Fact]
+    public void Get_ByIdUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        repositoryMock.GetById(Arg.Any<int>()).Returns(x => { throw new Exception("Unhandled exception"); });
+
+        var controller = new ToDoItemsController(repositoryMock);
+        var validId = 1;
+
+        // Act
+        var result = controller.GetById(validId);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal("Unhandled exception", problemDetails.Detail);
+    }
+
 }
