@@ -1,10 +1,14 @@
-﻿IEnumerable<string> strings = ["Prvni string", "Druhy string"];
-IEnumerable<integers> integers = [10, 15, -1];
-var stringoveIntegery = integers.Select(1=> 1.ToString);
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+IEnumerable<string> strings = new List<string> { "Prvni string", "Druhy string" };
+IEnumerable<int> integers = new List<int> { 10, 15, -1 };
+var stringoveIntegery = integers.Select(i => i.ToString());
 WriteToConsole(strings);
 WriteToConsole(integers);
 
-static void WriteToConsole<T>(IEnurable<T> list) where T : IComparable<T>, IEquatable<T>
+static void WriteToConsole<T>(IEnumerable<T> list) where T : IComparable<T>, IEquatable<T>
 {
     foreach (var s in list)
     {
@@ -34,17 +38,16 @@ static T MaxCollections<T>(IEnumerable<T> collections) where T : IComparable<T>
         {
             max = item;
         }
-
     }
     return max;
 }
 
 static bool IsDistinct<T>(IEnumerable<T> collection)
 {
-    Hashset<T> seen = new Hashset<T>();
-    foreach (var item in collection);
+    HashSet<T> seen = new HashSet<T>();
+    foreach (var item in collection)
     {
-        if(!seen.Add(item))
+        if (!seen.Add(item))
         {
             return false;
         }
