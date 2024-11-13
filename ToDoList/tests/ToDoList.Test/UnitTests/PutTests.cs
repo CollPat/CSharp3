@@ -38,6 +38,8 @@ public class PutTests
 
         // Assert
         Assert.IsType<NoContentResult>(result);
+
+        //opet bychom mohli kontrolovat jake metody a kolikrat z kontroleru jsme volali pres mock
     }
 
     [Fact]
@@ -61,6 +63,8 @@ public class PutTests
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+
+        //opet bychom mohli kontrolovat jake metody a kolikrat z kontroleru jsme volali pres mock
     }
 
     [Fact]
@@ -80,6 +84,8 @@ public class PutTests
 
         repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
         repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Do(_ => { throw new Exception("Unhandled exception"); });
+        //repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Throws(new Exception("Unhandled exception"));
+        //na vyhazovani vyjimek je lepsi Throws
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another Name",

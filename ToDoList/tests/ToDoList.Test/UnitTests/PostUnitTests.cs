@@ -16,7 +16,7 @@ public class PostUnitTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { });
+        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { }); //neni potreba nic specifikovat pokud, mock automaticky nedela nic :)
 
         var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemsCreateRequestDto(
@@ -34,6 +34,8 @@ public class PostUnitTests
         Assert.Equal(request.Description, value.Description);
         Assert.Equal(request.IsCompleted, value.IsCompleted);
         Assert.Equal(request.Name, value.Name);
+
+        //chtelo by to kontrolu zda jsme zavolali Create jednou :)
     }
 
     [Fact]
@@ -42,6 +44,7 @@ public class PostUnitTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { throw new Exception("Unhandled exception"); });
+        //misto Do dat Throw
 
         var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemsCreateRequestDto(
@@ -58,6 +61,8 @@ public class PostUnitTests
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
         var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
         Assert.Equal("Unhandled exception", problemDetails.Detail);
+
+        //chtelo by to kontrolu zda jsme zavolali Create jednou :)
     }
 }
 

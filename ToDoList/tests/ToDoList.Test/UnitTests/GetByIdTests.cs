@@ -61,6 +61,7 @@ public class GetByIdTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         repositoryMock.GetById(Arg.Any<int>()).Returns(x => { throw new Exception("Unhandled exception"); });
+        //opet by to slo ale muzeme pres Throw
 
         var controller = new ToDoItemsController(repositoryMock);
         var validId = 1;
