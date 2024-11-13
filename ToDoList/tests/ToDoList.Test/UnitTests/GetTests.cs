@@ -11,7 +11,7 @@ using ToDoList.WebApi.Controllers;
 public class GetTests
 {
     [Fact]
-    public void Get_AllItems_ReturnsAllItems()
+    public void Get_AllItems_ReturnsAllItems() //nazev je zajimavy :) radeji bych to oznacil Get_SomeItemsAvailable_ReturnsAllItems
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -24,6 +24,8 @@ public class GetTests
             IsCompleted = false
         };
 
+        //zde bych predpripravil List<ToDoItem> ktery v sobe ma toDoItem
+
         repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem });
 
         // Act
@@ -32,6 +34,8 @@ public class GetTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var value = Assert.IsAssignableFrom<IEnumerable<ToDoItemGetResponseDto>>(okResult.Value);
+
+        //chybi mi kontrola zda se vratil spravny pocet ToDoItems (ocekavam ze v IEnumerable dostanu 1 v tvem pridape a ten bych taky mel dostat)
 
         var firstItem = value.First();
         Assert.Equal(toDoItem.ToDoItemId, firstItem.Id);
@@ -65,6 +69,7 @@ public class GetTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         repositoryMock.GetAll().Returns(x => { throw new Exception("Unhandled exception"); });
+        //na vyhazovani vyjimek je lepsi Throw
 
         var controller = new ToDoItemsController(repositoryMock);
 

@@ -23,8 +23,8 @@ public class DeleteTests
             Description = "Popis",
             IsCompleted = false
         };
+        //pokud bychom chteli byt puntickarstvi, tak bychom meli stanovit ze to vrati pouze pro toDoItem.ToDoItemId
         repositoryMock.GetById(Arg.Any<int>()).Returns(toDoItem);
-
         // Act
         var result = controller.DeleteById(toDoItem.ToDoItemId);
 
@@ -63,6 +63,7 @@ public class DeleteTests
         var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItemId = 1;
+        //opet bychom mohli stanovit ze se to stane pouze pro toDoItemId
         repositoryMock.GetById(Arg.Any<int>()).Throws(new Exception("Unhandled exception"));
 
         // Act
