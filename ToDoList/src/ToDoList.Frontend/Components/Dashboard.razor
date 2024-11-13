@@ -1,0 +1,48 @@
+﻿@rendermode InteractiveServer
+
+<h1>Dashboard</h1>
+<table>
+    <tr>
+        <td><button @onclick = "OrderByName">Zoradiť podľa Mena </button></td>
+        <td><button @onclick = "OrderById">Zoradiť podľa ID </button></td>
+    </tr>
+
+</table>
+
+<table>
+    @foreach(var ToDoItem in toDoItems)
+    {
+        <tr>
+            <td>@ToDoItem.ToDoItemId</td>
+            <td>@ToDoItem.Name</td>
+            <td>@ToDoItem.IsCompleted</td>
+            <td>@ToDoItem.Description</td>
+        </tr>
+    }
+</table>
+
+@code
+{
+        private List<ToDoItemView> toDoItems = [
+        new ToDoItemView() {ToDoItemId = 1, Name = "Udelat ukol na Czechitas", IsCompleted = false},
+        new ToDoItemView() {ToDoItemId = 2, Name = "Udelat nepovinny ukol na Czechitas", IsCompleted = false}
+    ];
+    public class ToDoItemView
+    {
+        public int ToDoItemId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+
+    public OrderByName();
+    {
+        toDoItems = toDoItems.OrderBy(ukol => ukol.Name).ToList();
+
+    }
+
+    public OrderById();
+    {
+        toDoItems = toDoItems.OrderBy(ukol => ukol.ToDoItemId).ToList();
+    }
+}

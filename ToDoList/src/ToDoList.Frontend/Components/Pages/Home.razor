@@ -1,7 +1,25 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>@ahojSvet</h1>
 
 Welcome to your new app.
+<br>
+<button @onclick = "Increment">Moje tlačítko </button>
+
+<br>
+Hodnota počítadla: @counter;
+
+
+@code
+{
+    string ahojSvet = "Ahoj, svet!";
+    int counter = 0;
+
+    public void Increment()
+    {
+        counter++;
+    }
+}
