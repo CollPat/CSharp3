@@ -1,6 +1,7 @@
 ﻿@rendermode InteractiveServer
 
 <h1>Dashboard</h1>
+
 <thead>
   <tr>
     <th>
@@ -28,10 +29,12 @@
 
 @code
 {
-        private List<ToDoItemView> toDoItems = [
+        private List<ToDoItemView> toDoItems =
+    [
         new ToDoItemView() {ToDoItemId = 1, Name = "Udelat ukol na Czechitas", IsCompleted = false},
         new ToDoItemView() {ToDoItemId = 2, Name = "Udelat nepovinny ukol na Czechitas", IsCompleted = false}
     ];
+
     public class ToDoItemView
     {
         public int ToDoItemId { get; set; }
@@ -40,13 +43,13 @@
         public bool IsCompleted { get; set; }
     }
 
-    public OrderByName();
+    public void OrderByName()
     {
         toDoItems = toDoItems.OrderBy(ukol => ukol.Name).ToList();
 
     }
 
-    public OrderById();
+    public void OrderById()
     {
         toDoItems = toDoItems.OrderBy(ukol => ukol.ToDoItemId).ToList();
     }
