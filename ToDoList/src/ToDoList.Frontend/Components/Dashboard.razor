@@ -1,13 +1,18 @@
 ﻿@rendermode InteractiveServer
 
 <h1>Dashboard</h1>
-<table>
-    <tr>
-        <td><button @onclick = "OrderByName">Zoradiť podľa Mena </button></td>
-        <td><button @onclick = "OrderById">Zoradiť podľa ID </button></td>
-    </tr>
-
-</table>
+<thead>
+  <tr>
+    <th>
+      <button @onclick="OrderById">Zoradiť podľa ID</button>
+    </th>
+    <th>
+      <button @onclick="OrderByName">Zoradiť podľa Mena</button>
+    </th>
+    <th>Completed</th>
+    <th>Description</th>
+  </tr>
+</thead>
 
 <table>
     @foreach(var ToDoItem in toDoItems)
