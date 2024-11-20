@@ -16,7 +16,7 @@ public class PostUnitTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { }); //neni potreba nic specifikovat pokud, mock automaticky nedela nic :)
+        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Throw(_ => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemsCreateRequestDto(
@@ -35,7 +35,8 @@ public class PostUnitTests
         Assert.Equal(request.IsCompleted, value.IsCompleted);
         Assert.Equal(request.Name, value.Name);
 
-        //chtelo by to kontrolu zda jsme zavolali Create jednou :)
+        repositoryMock.Received(1).Create(Arg.Any<ToDoItem>());
+
     }
 
     [Fact]
@@ -43,8 +44,7 @@ public class PostUnitTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Do(_ => { throw new Exception("Unhandled exception"); });
-        //misto Do dat Throw
+        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Throw(_ => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemsCreateRequestDto(
@@ -62,7 +62,7 @@ public class PostUnitTests
         var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
         Assert.Equal("Unhandled exception", problemDetails.Detail);
 
-        //chtelo by to kontrolu zda jsme zavolali Create jednou :)
+        repositoryMock.Received(1).Create(Arg.Any<ToDoItem>());
     }
 }
 

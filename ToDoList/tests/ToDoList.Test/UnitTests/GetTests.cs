@@ -3,6 +3,7 @@ namespace ToDoList.Test;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
@@ -11,7 +12,7 @@ using ToDoList.WebApi.Controllers;
 public class GetTests
 {
     [Fact]
-    public void Get_AllItems_ReturnsAllItems() //nazev je zajimavy :) radeji bych to oznacil Get_SomeItemsAvailable_ReturnsAllItems
+    public void Get_SomeItemsAvailable_ReturnsAllItems()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -24,7 +25,8 @@ public class GetTests
             IsCompleted = false
         };
 
-        //zde bych predpripravil List<ToDoItem> ktery v sobe ma toDoItem
+
+        var toDoItems = new List<ToDoItem> { toDoItem };
 
         repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem });
 
@@ -35,7 +37,7 @@ public class GetTests
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var value = Assert.IsAssignableFrom<IEnumerable<ToDoItemGetResponseDto>>(okResult.Value);
 
-        //chybi mi kontrola zda se vratil spravny pocet ToDoItems (ocekavam ze v IEnumerable dostanu 1 v tvem pridape a ten bych taky mel dostat)
+        Assert.Single(value);
 
         var firstItem = value.First();
         Assert.Equal(toDoItem.ToDoItemId, firstItem.Id);
@@ -68,8 +70,7 @@ public class GetTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.GetAll().Returns(x => { throw new Exception("Unhandled exception"); });
-        //na vyhazovani vyjimek je lepsi Throw
+        repositoryMock.GetAll().Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
 

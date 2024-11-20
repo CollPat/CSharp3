@@ -3,6 +3,7 @@ namespace ToDoList.Test;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
@@ -60,8 +61,7 @@ public class GetByIdTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.GetById(Arg.Any<int>()).Returns(x => { throw new Exception("Unhandled exception"); });
-        //opet by to slo ale muzeme pres Throw
+        repositoryMock.GetById(Arg.Any<int>()).Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
         var validId = 1;
