@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddSwaggerGen();
     builder.Services.AddDbContext<ToDoItemsContext>();
     builder.Services.AddScoped<IRepository<ToDoItem>, ToDoItemsRepository>();
-    builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
 }
 
 var app = builder.Build();
@@ -22,5 +20,3 @@ var app = builder.Build();
 }
 
 app.Run();
-
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
