@@ -1,4 +1,8 @@
 ﻿@page "/dashboard"
+@using ToDoList.Domain.Models
+@using ToDoList.Frontend.Clients
+@using ToDoList.Frontend.Views
+@inject IToDoItemsClient ToDoItemsClient
 @rendermode InteractiveServer
 
 <PageTitle>Dashboard</PageTitle>
@@ -6,20 +10,28 @@
 <h1>Dashboard</h1>
 
 <thead>
-  <tr>
-    <th>
-      <button @onclick="OrderById">Zoradiť podľa ID</button>
-    </th>
-    <th>
-      <button @onclick="OrderByName">Zoradiť podľa Mena</button>
-    </th>
-    <th>Completed</th>
-    <th>Description</th>
-  </tr>
+    <tr>
+        <th>
+            <button @onclick="OrderById">Order by ID</button>
+        </th>
+        <th>
+            <button @onclick="OrderByName">Order by Name</button>
+        </th>
+
+        <th>Completed</th>
+        <th>Description</th>
+    </tr>
 </thead>
 
 <table>
-    @foreach(var ToDoItem in toDoItems)
+
+@if (toDoItems is null)
+{
+    <p>No items to display.</p>
+}
+else
+{
+    @foreach (var ToDoItem in toDoItems)
     {
         <tr>
             <td>@ToDoItem.ToDoItemId</td>
@@ -28,32 +40,25 @@
             <td>@ToDoItem.Description</td>
         </tr>
     }
+}
 </table>
 
 @code
 {
-        private List<ToDoItemView> toDoItems =
-    [
-        new ToDoItemView() {ToDoItemId = 1, Name = "Udelat ukol na Czechitas", IsCompleted = false},
-        new ToDoItemView() {ToDoItemId = 2, Name = "Udelat nepovinny ukol na Czechitas", IsCompleted = false}
-    ];
-
-    public class ToDoItemView
+    protected override async Task OnInitializedAsync()
     {
-        public int ToDoItemId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool IsCompleted { get; set; }
+        toDoItems = await ToDoItemsClient.ReadItemsAsync();
     }
 
+    private List<ToDoItemView>? toDoItems;
     public void OrderByName()
     {
-        toDoItems = toDoItems.OrderBy(ukol => ukol.Name).ToList();
+        toDoItems = toDoItems?.OrderBy(item => item.Name).ToList();
 
     }
 
     public void OrderById()
     {
-        toDoItems = toDoItems.OrderBy(ukol => ukol.ToDoItemId).ToList();
+        toDoItems = toDoItems?.OrderBy(item => item.ToDoItemId).ToList();
     }
 }
