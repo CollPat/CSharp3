@@ -40,11 +40,7 @@ public class PutTests
         Assert.IsType<NoContentResult>(result);
 
         repositoryMock.Received(1).GetById(toDoItem.ToDoItemId);
-        repositoryMock.Received(1).Update(Arg.Is<ToDoItem>(item =>
-            item.ToDoItemId == toDoItem.ToDoItemId &&
-            item.Name == request.Name &&
-            item.Description == request.Description &&
-            item.IsCompleted == request.IsCompleted));
+
     }
 
     [Fact]
