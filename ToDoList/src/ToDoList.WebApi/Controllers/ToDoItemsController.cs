@@ -9,17 +9,12 @@ using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ToDoItemsController : ControllerBase
+public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerBase
 
 
 {
 
-    private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(IRepository<ToDoItem> repository)
-    {
-        this.repository = repository;
-    }
-
+    private readonly IRepository<ToDoItem> repository = repository;
 
     [HttpPost]
     public IActionResult Create(ToDoItemsCreateRequestDto request)
@@ -94,6 +89,8 @@ public class ToDoItemsController : ControllerBase
             var updatedItem = request.ToDomain();
             item.Name = updatedItem.Name;
             item.Description = updatedItem.Description;
+            item.IsCompleted = updatedItem.IsCompleted;
+            item.Category = updatedItem.Category;
 
             repository.Update(item);
             return NoContent();

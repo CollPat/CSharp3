@@ -1,8 +1,8 @@
 namespace ToDoList.Test;
 
+using NSubstitute;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NSubstitute;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
@@ -30,7 +30,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another name",
             Description: "Different description",
-            IsCompleted: true
+            IsCompleted: true,
+            Category: "Work"
         );
 
         // Act
@@ -53,7 +54,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another name",
             Description: "Different description",
-            IsCompleted: true
+            IsCompleted: true,
+            Category: "Work"
         );
 
         var invalidId = -1;
@@ -85,12 +87,14 @@ public class PutTests
         };
 
         repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
-        repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Throw(_ => { throw new Exception("Unhandled exception"); });
+        repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Throw(_ => throw new Exception("Unhandled exception"));
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another Name",
             Description: "Different description",
-            IsCompleted: true
+            IsCompleted: true,
+            Category: "Work"
+
         );
 
         // Act

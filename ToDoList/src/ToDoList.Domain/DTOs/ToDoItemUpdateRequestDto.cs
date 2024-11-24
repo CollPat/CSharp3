@@ -3,7 +3,7 @@ namespace ToDoList.Domain.DTOs;
 
 using ToDoList.Domain.Models;
 
-public record ToDoItemUpdateRequestDto(string Name, string Description, bool IsCompleted)
+public record ToDoItemUpdateRequestDto(string Name, string Description, bool IsCompleted, string? Category)
 {
 
     public ToDoItem ToDomain()
@@ -12,7 +12,8 @@ public record ToDoItemUpdateRequestDto(string Name, string Description, bool IsC
         {
             Name = Name,
             Description = Description,
-            IsCompleted = IsCompleted
+            IsCompleted = IsCompleted,
+            Category = Category
         };
     }
 }

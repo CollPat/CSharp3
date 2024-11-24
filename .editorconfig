@@ -446,3 +446,6 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 ##########################################
+
+# IDE0320: Make anonymous function static
+csharp_prefer_static_anonymous_function = true

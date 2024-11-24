@@ -22,7 +22,8 @@ public class GetTests
             ToDoItemId = 1,
             Name = "Test Name",
             Description = "Test Decription",
-            IsCompleted = false
+            IsCompleted = false,
+            Category = "Work"
         };
 
 
@@ -44,6 +45,7 @@ public class GetTests
         Assert.Equal(toDoItem.Description, firstItem.Description);
         Assert.Equal(toDoItem.IsCompleted, firstItem.IsCompleted);
         Assert.Equal(toDoItem.Name, firstItem.Name);
+        Assert.Equal(toDoItem.Category, firstItem.Category);
 
         repositoryMock.Received(1).GetAll();
     }

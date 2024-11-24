@@ -20,7 +20,8 @@ public class DeleteTests
             ToDoItemId = 1,
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Category = "Work"
         };
 
         repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);

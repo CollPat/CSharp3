@@ -23,7 +23,8 @@ public class GetByIdTests
             ToDoItemId = 1,
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Category = "Work"
         };
 
         repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
@@ -38,6 +39,7 @@ public class GetByIdTests
         Assert.Equal(toDoItem.Description, value.Description);
         Assert.Equal(toDoItem.IsCompleted, value.IsCompleted);
         Assert.Equal(toDoItem.Name, value.Name);
+        Assert.Equal(toDoItem.Category, value.Category);
     }
 
     [Fact]

@@ -14,4 +14,6 @@ public class ToDoItem
 
     public bool IsCompleted { get; set; }
 
+    public string? Category { get; set; }
+
 }
