@@ -27,9 +27,9 @@ public class GetTests
         };
 
 
-        var toDoItems = new List<ToDoItem> { toDoItem };
+        var toDoItems = new List<ToDoItem> { toDoItem }; //viz nasledujici comment. Pokud si nechas sve reseni, tak tento radek smazat - nemeli bychom nechavat zbytecny kod
 
-        repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem });
+        repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem }); //muzeme tady dat repositoryMock.GetAll().Returns(toDoItems);
 
         // Act
         var result = controller.Read();
