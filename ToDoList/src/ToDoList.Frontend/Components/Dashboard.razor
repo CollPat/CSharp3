@@ -3,48 +3,54 @@
 @using ToDoList.Frontend.Clients
 @using ToDoList.Frontend.Views
 @inject IToDoItemsClient ToDoItemsClient
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Dashboard</PageTitle>
 
 <h1>Dashboard</h1>
 
-<thead>
-    <tr>
-        <th>
-            <button @onclick="OrderById">Order by ID</button>
-        </th>
-        <th>
-            <button @onclick="OrderByName">Order by Name</button>
-        </th>
-
-        <th>Completed</th>
+<table class="table table-hover mt-3">
+    <thead class="table-dark">
+        <th>ID</th>
+        <th>Name</th>
         <th>Description</th>
-    </tr>
-</thead>
+        <th>Completed</th>
+        <th>Actions</th>
+    </thead>
 
-<table>
+    <tbody>
+        @if (toDoItems is null)
+        {
+            <p>No items to display.</p>
+        }
+        else
+        {
+            @foreach (var ToDoItem in toDoItems)
+            {
+                <tr class="table-secondary @GetCorrectClassFoTableLine(ToDoItem.IsCompleted)">
+                    <td>@ToDoItem.ToDoItemId</td>
+                    <td>@ToDoItem.Name</td>
+                    <td>@ToDoItem.Description</td>
+                    <td>@ToDoItem.IsCompleted</td>
+                    <td><button class="btn btn-success" @onclick="()=>EditItem(ToDoItem)"> Edit </button></td>
+                </tr>
+            }
+        }
+    </tbody>
 
-@if (toDoItems is null)
-{
-    <p>No items to display.</p>
-}
-else
-{
-    @foreach (var ToDoItem in toDoItems)
-    {
-        <tr>
-            <td>@ToDoItem.ToDoItemId</td>
-            <td>@ToDoItem.Name</td>
-            <td>@ToDoItem.IsCompleted</td>
-            <td>@ToDoItem.Description</td>
-        </tr>
-    }
-}
 </table>
+
+<button class="btn btn-dark" @onclick="OrderById">Order by ID</button>
+<button class="btn btn-dark" @onclick="OrderByName">Order by Name</button>
+
 
 @code
 {
+    protected string GetCorrectClassFoTableLine(bool isCompleted)
+    {
+        return isCompleted ? "table-success" : "table-secondary";
+    }
     protected override async Task OnInitializedAsync()
     {
         toDoItems = await ToDoItemsClient.ReadItemsAsync();
@@ -60,5 +66,10 @@ else
     public void OrderById()
     {
         toDoItems = toDoItems?.OrderBy(item => item.ToDoItemId).ToList();
+    }
+
+    public void EditItem(ToDoItemView toDoItem)
+    {
+        NavigationManager.NavigateTo($"editToDoItem/{toDoItem.ToDoItemId}");
     }
 }

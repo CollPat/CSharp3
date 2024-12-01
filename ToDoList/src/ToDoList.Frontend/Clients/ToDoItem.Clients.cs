@@ -18,6 +18,11 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
             IsCompleted = dto.IsCompleted
         }).ToList();
 
+        if (response == null)
+        {
+            throw new Exception("Error");
+        }
+
         return toDoItemsView;
     }
 }
