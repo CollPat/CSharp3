@@ -6,14 +6,11 @@ using ToDoList.Domain.Models;
 public record ToDoItemUpdateRequestDto(string Name, string Description, bool IsCompleted, string? Category)
 {
 
-    public ToDoItem ToDomain()
+    public ToDoItem ToDomain() => new ToDoItem
     {
-        return new ToDoItem
-        {
-            Name = Name,
-            Description = Description,
-            IsCompleted = IsCompleted,
-            Category = Category
-        };
-    }
+        Name = Name,
+        Description = Description,
+        IsCompleted = IsCompleted,
+        Category = Category
+    };
 }

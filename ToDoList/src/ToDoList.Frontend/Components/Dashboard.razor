@@ -33,7 +33,8 @@
                     <td>@ToDoItem.Description</td>
                     <td>@ToDoItem.IsCompleted</td>
                     <td><button class="btn btn-success" @onclick="()=>EditItem(ToDoItem)"> Edit </button></td>
-                    <td><button class="btn btn-danger" @onclick="()=>DeleteItem(ToDoItem.ToDoItemId)">Cancel</button></td>
+                    <td><button class="btn btn-danger" @onclick="()=>DeleteItem(ToDoItem)">Delete</button></td>
+                    <td><button class="btn btn-warning" @onclick="()=>ItemCompleted(ToDoItem)">Item Completed</button></td>
                 </tr>
             }
         }
@@ -73,9 +74,16 @@
         NavigationManager.NavigateTo($"editToDoItem/{toDoItem.ToDoItemId}");
     }
 
-    private async Task DeleteItem(int itemId)
+    private async Task DeleteItem(ToDoItemView toDoItem)
     {
-        await ToDoItemsClient.DeleteAsync(itemId);
+        await ToDoItemsClient.DeleteItemAsync(toDoItem);
+        toDoItems = await ToDoItemsClient.ReadItemsAsync();
+    }
+
+    private async Task ItemCompleted(ToDoItemView toDoItem)
+    {
+        toDoItem.IsCompleted = !toDoItem.IsCompleted;
+        await ToDoItemsClient.UpdateItemAsync(toDoItem);
         toDoItems = await ToDoItemsClient.ReadItemsAsync();
     }
 }

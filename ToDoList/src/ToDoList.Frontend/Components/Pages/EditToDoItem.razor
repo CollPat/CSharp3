@@ -21,7 +21,7 @@
 {
     protected override async Task OnInitializedAsync()
     {
-        ToDoItem = await ToDoItemsClient.ReadItemsAsync(ItemId);
+        ToDoItem = await ToDoItemsClient.ReadItemByIdAsync(ItemId);
     }
     [Parameter]
     public int ItemId { get; set; }
@@ -29,7 +29,7 @@
     public ToDoItemView ToDoItem { get; set; }
     public async Task Submit()
     {
-        await ToDoItemsClient.(ToDoItem);
+        await ToDoItemsClient.UpdateItemAsync(ToDoItem);
         NavigationManager.NavigateTo("/");
     }
 }
