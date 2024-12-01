@@ -34,16 +34,6 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
-    {
-        var item = await context.ToDoItems.FindAsync(id);
-        if (item != null)
-        {
-            context.ToDoItems.Remove(item);
-            await context.SaveChangesAsync();
-        }
-    }
-
     public async Task DeleteAsync(ToDoItem item)
     {
         if (item != null)

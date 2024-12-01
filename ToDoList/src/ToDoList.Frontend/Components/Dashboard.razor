@@ -1,5 +1,4 @@
 ﻿@page "/dashboard"
-@using ToDoList.Domain.Models
 @using ToDoList.Frontend.Clients
 @using ToDoList.Frontend.Views
 @inject IToDoItemsClient ToDoItemsClient
@@ -10,7 +9,7 @@
 
 <h1>Dashboard</h1>
 
-<table class="table table-hover mt-3">
+<table class="table table-hover mt-5">
     <thead class="table-dark">
         <th>ID</th>
         <th>Name</th>
@@ -22,7 +21,7 @@
     <tbody>
         @if (toDoItems is null)
         {
-            <p>No items to display.</p>
+            <p>Loading...</p>
         }
         else
         {
@@ -34,6 +33,7 @@
                     <td>@ToDoItem.Description</td>
                     <td>@ToDoItem.IsCompleted</td>
                     <td><button class="btn btn-success" @onclick="()=>EditItem(ToDoItem)"> Edit </button></td>
+                    <td><button class="btn btn-danger" @onclick="()=>DeleteItem(ToDoItem.ToDoItemId)">Cancel</button></td>
                 </tr>
             }
         }
@@ -71,5 +71,11 @@
     public void EditItem(ToDoItemView toDoItem)
     {
         NavigationManager.NavigateTo($"editToDoItem/{toDoItem.ToDoItemId}");
+    }
+
+    private async Task DeleteItem(int itemId)
+    {
+        await ToDoItemsClient.DeleteAsync(itemId);
+        toDoItems = await ToDoItemsClient.ReadItemsAsync();
     }
 }
