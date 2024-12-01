@@ -25,7 +25,7 @@ public class PutTests
             IsCompleted = false
         };
 
-        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another name",
@@ -35,12 +35,12 @@ public class PutTests
         );
 
         // Act
-        var result = controller.UpdateById(toDoItem.ToDoItemId, request);
+        var result = controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
 
         // Assert
         Assert.IsType<NoContentResult>(result);
 
-        repositoryMock.Received(1).GetById(toDoItem.ToDoItemId);
+        repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
 
     }
 
@@ -59,16 +59,16 @@ public class PutTests
         );
 
         var invalidId = -1;
-        repositoryMock.GetById(invalidId).Returns((ToDoItem)null);
+        repositoryMock.GetByIdAsync(invalidId).Returns((ToDoItem)null);
 
         // Act
-        var result = controller.UpdateById(invalidId, request);
+        var result = controller.UpdateByIdAsync(invalidId, request);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
 
-        repositoryMock.Received(1).GetById(invalidId);
-        repositoryMock.DidNotReceive().Update(Arg.Any<ToDoItem>());
+        repositoryMock.Received(1).GetByIdAsync(invalidId);
+        repositoryMock.DidNotReceive().UpdateAsync(Arg.Any<ToDoItem>());
     }
 
     [Fact]
@@ -86,8 +86,8 @@ public class PutTests
             IsCompleted = false
         };
 
-        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
-        repositoryMock.When(repo => repo.Update(Arg.Any<ToDoItem>())).Throw(_ => throw new Exception("Unhandled exception"));
+        repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.When(repo => repo.UpdateAsync(Arg.Any<ToDoItem>())).Throw(new Exception("Unhandled exception"));
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Another Name",
@@ -98,7 +98,7 @@ public class PutTests
         );
 
         // Act
-        var result = controller.UpdateById(toDoItem.ToDoItemId, request);
+        var result = controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);

@@ -24,16 +24,16 @@ public class DeleteTests
             Category = "Work"
         };
 
-        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
 
         // Act
-        var result = controller.DeleteById(toDoItem.ToDoItemId);
+        var result = controller.DeleteByIdAsync(toDoItem.ToDoItemId);
 
 
         // Assert
         Assert.IsType<NoContentResult>(result);
-        repositoryMock.Received(1).GetById(toDoItem.ToDoItemId);
-        repositoryMock.Received(1).Delete(toDoItem);
+        repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
+        repositoryMock.Received(1).DeleteAsync(toDoItem);
 
     }
 
@@ -45,15 +45,15 @@ public class DeleteTests
         var controller = new ToDoItemsController(repositoryMock);
 
         var invalidId = -1;
-        repositoryMock.GetById(Arg.Is(invalidId)).Returns((ToDoItem)null);
+        repositoryMock.GetByIdAsync(Arg.Is(invalidId)).Returns((ToDoItem)null);
 
         // Act
-        var result = controller.DeleteById(invalidId);
+        var result = controller.DeleteByIdAsync(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
-        repositoryMock.Received(1).GetById(invalidId);
-        repositoryMock.DidNotReceive().Delete(Arg.Any<ToDoItem>());
+        repositoryMock.Received(1).GetByIdAsync(invalidId);
+        repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
     }
 
     [Fact]
@@ -64,16 +64,16 @@ public class DeleteTests
         var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItemId = 1;
-        repositoryMock.When(repo => repo.GetById(toDoItemId)).Throw(_ => throw new Exception("Unhandled exception"));
+        repositoryMock.When(repo => repo.GetByIdAsync(toDoItemId)).Throw(_ => throw new Exception("Unhandled exception"));
 
         // Act
-        var result = controller.DeleteById(toDoItemId);
+        var result = controller.DeleteByIdAsync(toDoItemId);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, objectResult.StatusCode);
-        repositoryMock.Received(1).GetById(toDoItemId);
-        repositoryMock.DidNotReceive().Delete(Arg.Any<ToDoItem>());
+        repositoryMock.Received(1).GetByIdAsync(toDoItemId);
+        repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
     }
 
 }

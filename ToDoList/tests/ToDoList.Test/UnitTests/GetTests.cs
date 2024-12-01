@@ -27,12 +27,12 @@ public class GetTests
         };
 
 
-        var toDoItems = new List<ToDoItem> { toDoItem }; //viz nasledujici comment. Pokud si nechas sve reseni, tak tento radek smazat - nemeli bychom nechavat zbytecny kod
+        var toDoItems = new List<ToDoItem> { toDoItem };
 
-        repositoryMock.GetAll().Returns(new List<ToDoItem> { toDoItem }); //muzeme tady dat repositoryMock.GetAll().Returns(toDoItems);
+        repositoryMock.GetAllAsync().Returns(toDoItems);
 
         // Act
-        var result = controller.Read();
+        var result = controller.ReadAsync();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -47,7 +47,7 @@ public class GetTests
         Assert.Equal(toDoItem.Name, firstItem.Name);
         Assert.Equal(toDoItem.Category, firstItem.Category);
 
-        repositoryMock.Received(1).GetAll();
+        repositoryMock.Received(1).GetAllAsync();
     }
 
     [Fact]
@@ -56,15 +56,15 @@ public class GetTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
-        repositoryMock.GetAll().Returns(new List<ToDoItem>());
+        repositoryMock.GetAllAsync().Returns(new List<ToDoItem>());
 
         // Act
-        var result = controller.Read();
+        var result = controller.ReadAsync();
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
 
-        repositoryMock.Received(1).GetAll();
+        repositoryMock.Received(1).GetAllAsync();
     }
 
     [Fact]
@@ -72,12 +72,12 @@ public class GetTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.GetAll().Throws(x => { throw new Exception("Unhandled exception"); });
+        repositoryMock.GetAllAsync().Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
 
         // Act
-        var result = controller.Read();
+        var result = controller.ReadAsync();
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result.Result);

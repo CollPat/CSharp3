@@ -13,7 +13,7 @@ public class PostUnitTests
 {
 
     [Fact]
-    public void Post_CreateValidRequest_ReturnsCreatedAtAction()
+    public async Task Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -27,51 +27,50 @@ public class PostUnitTests
         );
 
         // Act
-        var result = controller.Create(request);
+        var result = await controller.CreateAsync(request);
 
         // Assert
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-        var value = Assert.IsType<ToDoItem>(createdResult.Value);
+        var value = Assert.IsType<ToDoItemGetResponseDto>(createdResult.Value);
+
         Assert.Equal(request.Description, value.Description);
         Assert.Equal(request.IsCompleted, value.IsCompleted);
         Assert.Equal(request.Name, value.Name);
         Assert.Equal(request.Category, value.Category);
 
-        repositoryMock.Received(1).Create(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).CreateAsync(Arg.Any<ToDoItem>());
     }
 
 
+
     [Fact]
-    public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    public async Task Post_CreateUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.When(repo => repo.Create(Arg.Any<ToDoItem>())).Throw(new Exception("Unhandled exception"));
+        repositoryMock.When(repo => repo.CreateAsync(Arg.Any<ToDoItem>())).Throw(new Exception("Unhandled exception"));
 
         var controller = new ToDoItemsController(repositoryMock);
+
         var request = new ToDoItemsCreateRequestDto(
-            Name: "Jmeno",
-            Description: "Popis",
+            Name: "Name",
+            Description: "Description",
             IsCompleted: false,
             Category: "Work"
         );
 
         // Act
-        var result = controller.Create(request);
+        var result = await controller.CreateAsync(request);
 
+        // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
-
-
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
 
-
         var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-
-
         Assert.Equal("Unhandled exception", problemDetails.Detail);
 
-
-        repositoryMock.Received(1).Create(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).CreateAsync(Arg.Any<ToDoItem>());
     }
+
 }
 

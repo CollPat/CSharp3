@@ -27,9 +27,9 @@ public class GetByIdTests
             Category = "Work"
         };
 
-        repositoryMock.GetById(toDoItem.ToDoItemId).Returns(toDoItem);
+        repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
         // Act
-        var result = controller.GetById(toDoItem.ToDoItemId);
+        var result = controller.GetByIdAsync(toDoItem.ToDoItemId);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -52,7 +52,7 @@ public class GetByIdTests
         var invalidId = -1;
 
         // Act
-        var result = controller.GetById(invalidId);
+        var result = controller.GetByIdAsync(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
@@ -63,13 +63,13 @@ public class GetByIdTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        repositoryMock.GetById(Arg.Any<int>()).Throws(x => { throw new Exception("Unhandled exception"); });
+        repositoryMock.GetByIdAsync(Arg.Any<int>()).Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
         var validId = 1;
 
         // Act
-        var result = controller.GetById(validId);
+        var result = controller.GetByIdAsync(validId);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
