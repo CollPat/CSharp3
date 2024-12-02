@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -12,7 +13,7 @@ using ToDoList.WebApi.Controllers;
 public class GetByIdTests
 {
     [Fact]
-    public void GetById_ValidId_ReturnsItem()
+    public async Task GetById_ValidId_ReturnsItemAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -29,7 +30,7 @@ public class GetByIdTests
 
         repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
         // Act
-        var result = controller.GetByIdAsync(toDoItem.ToDoItemId);
+        var result = await controller.GetByIdAsync(toDoItem.ToDoItemId);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -43,7 +44,7 @@ public class GetByIdTests
     }
 
     [Fact]
-    public void GetById_InvalidId_ReturnsNotFound()
+    public async Task GetById_InvalidId_ReturnsNotFoundAsync()
     {
         //Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -52,14 +53,14 @@ public class GetByIdTests
         var invalidId = -1;
 
         // Act
-        var result = controller.GetByIdAsync(invalidId);
+        var result = await controller.GetByIdAsync(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
-    public void Get_ByIdUnhandledException_ReturnsInternalServerError()
+    public async Task Get_ByIdUnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -69,7 +70,7 @@ public class GetByIdTests
         var validId = 1;
 
         // Act
-        var result = controller.GetByIdAsync(validId);
+        var result = await controller.GetByIdAsync(validId);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);

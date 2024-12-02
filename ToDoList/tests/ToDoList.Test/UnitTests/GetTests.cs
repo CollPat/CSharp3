@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -12,7 +13,7 @@ using ToDoList.WebApi.Controllers;
 public class GetTests
 {
     [Fact]
-    public void Get_SomeItemsAvailable_ReturnsAllItems()
+    public async void Get_SomeItemsAvailable_ReturnsAllItems()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -32,7 +33,7 @@ public class GetTests
         repositoryMock.GetAllAsync().Returns(toDoItems);
 
         // Act
-        var result = controller.ReadAsync();
+        var result = await controller.ReadAsync();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -47,11 +48,11 @@ public class GetTests
         Assert.Equal(toDoItem.Name, firstItem.Name);
         Assert.Equal(toDoItem.Category, firstItem.Category);
 
-        repositoryMock.Received(1).GetAllAsync();
+        await repositoryMock.Received(1).GetAllAsync();
     }
 
     [Fact]
-    public void Get_NoItems_ReturnsNotFound()
+    public async Task Get_NoItems_ReturnsNotFoundAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -59,16 +60,16 @@ public class GetTests
         repositoryMock.GetAllAsync().Returns(new List<ToDoItem>());
 
         // Act
-        var result = controller.ReadAsync();
+        var result = await controller.ReadAsync();
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
 
-        repositoryMock.Received(1).GetAllAsync();
+        await repositoryMock.Received(1).GetAllAsync();
     }
 
     [Fact]
-    public void Get_ReadUnhandledException_ReturnsInternalServerError()
+    public async Task Get_ReadUnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -77,7 +78,7 @@ public class GetTests
         var controller = new ToDoItemsController(repositoryMock);
 
         // Act
-        var result = controller.ReadAsync();
+        var result = await controller.ReadAsync();
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result.Result);

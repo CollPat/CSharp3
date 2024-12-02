@@ -1,5 +1,6 @@
 namespace ToDoList.Test;
 
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using ToDoList.Domain.Models;
@@ -9,7 +10,7 @@ using ToDoList.WebApi.Controllers;
 public class DeleteTests
 {
     [Fact]
-    public void Delete_ValidItemId_ReturnsNoContent()
+    public async Task Delete_ValidItemId_ReturnsNoContentAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -27,18 +28,18 @@ public class DeleteTests
         repositoryMock.GetByIdAsync(toDoItem.ToDoItemId).Returns(toDoItem);
 
         // Act
-        var result = controller.DeleteByIdAsync(toDoItem.ToDoItemId);
+        var result = await controller.DeleteByIdAsync(toDoItem.ToDoItemId);
 
 
         // Assert
         Assert.IsType<NoContentResult>(result);
-        repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
-        repositoryMock.Received(1).DeleteAsync(toDoItem);
+        await repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
+        await repositoryMock.Received(1).DeleteAsync(toDoItem);
 
     }
 
     [Fact]
-    public void Delete_InvalidId_ReturnsNotFound()
+    public async Task Delete_InvalidId_ReturnsNotFoundAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -48,16 +49,16 @@ public class DeleteTests
         repositoryMock.GetByIdAsync(Arg.Is(invalidId)).Returns((ToDoItem)null);
 
         // Act
-        var result = controller.DeleteByIdAsync(invalidId);
+        var result = await controller.DeleteByIdAsync(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
-        repositoryMock.Received(1).GetByIdAsync(invalidId);
-        repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).GetByIdAsync(invalidId);
+        await repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
     }
 
     [Fact]
-    public void Delete_UnhandledException_ReturnsInternalServerError()
+    public async Task Delete_UnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -67,13 +68,13 @@ public class DeleteTests
         repositoryMock.When(repo => repo.GetByIdAsync(toDoItemId)).Throw(_ => throw new Exception("Unhandled exception"));
 
         // Act
-        var result = controller.DeleteByIdAsync(toDoItemId);
+        var result = await controller.DeleteByIdAsync(toDoItemId);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, objectResult.StatusCode);
-        repositoryMock.Received(1).GetByIdAsync(toDoItemId);
-        repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).GetByIdAsync(toDoItemId);
+        await repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
     }
 
 }

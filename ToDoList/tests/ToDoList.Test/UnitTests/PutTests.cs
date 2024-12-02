@@ -7,11 +7,12 @@ using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi.Controllers;
+using System.Threading.Tasks;
 
 public class PutTests
 {
     [Fact]
-    public void Put_ValidId_ReturnsNoContent()
+    public async void Put_ValidId_ReturnsNoContent()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -35,17 +36,17 @@ public class PutTests
         );
 
         // Act
-        var result = controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
+        var result = await controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
 
         // Assert
         Assert.IsType<NoContentResult>(result);
 
-        repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
+        await repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
 
     }
 
     [Fact]
-    public void Put_InvalidId_ReturnsNotFound()
+    public async Task Put_InvalidId_ReturnsNotFoundAsync()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -62,17 +63,17 @@ public class PutTests
         repositoryMock.GetByIdAsync(invalidId).Returns((ToDoItem)null);
 
         // Act
-        var result = controller.UpdateByIdAsync(invalidId, request);
+        var result = await controller.UpdateByIdAsync(invalidId, request);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
 
-        repositoryMock.Received(1).GetByIdAsync(invalidId);
-        repositoryMock.DidNotReceive().UpdateAsync(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).GetByIdAsync(invalidId);
+        await repositoryMock.DidNotReceive().UpdateAsync(Arg.Any<ToDoItem>());
     }
 
     [Fact]
-    public void Put_UpdateByIdUnhandledException_ReturnsInternalServerError()
+    public async void Put_UpdateByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
@@ -98,12 +99,15 @@ public class PutTests
         );
 
         // Act
-        var result = controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
+        var result = await controller.UpdateByIdAsync(toDoItem.ToDoItemId, request);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
         var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
         Assert.Equal("Unhandled exception", problemDetails.Detail);
+
+        await repositoryMock.Received(1).GetByIdAsync(toDoItem.ToDoItemId);
+        await repositoryMock.Received(1).UpdateAsync(Arg.Any<ToDoItem>());
     }
 }
