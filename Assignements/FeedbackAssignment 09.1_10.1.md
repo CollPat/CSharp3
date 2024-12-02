@@ -10,4 +10,4 @@ Funkcionalita je splněna, ovšem šlo by to udělat trochu zajímavěji :wink:
 Když je úkol nesplněný, tak by tlačítko přepínající stav splněnosti mohlo mít text třeba "Complete task", pokud by úkol naopak byl splněný tak by text mohl být "Switch to do", nebo cokoliv takového :wink: ale obecně je to splněno.
 
 ## PS
-ty commity za to nemůžou, netřeba jim dávat taková jména :D
+ty commity za to nemůžou, netřeba jim dávat taková jména :D to už bolo zo zúfalstva, ospravedlňujem sa, ale niekedy som nad tým strávila hodiny a potom som zistila, že to je len drobnosť 
