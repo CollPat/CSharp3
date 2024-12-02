@@ -55,6 +55,7 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
     }
 
     [HttpGet("{toDoItemId:int}")]
+    [ActionName(nameof(GetByIdAsync))] //bohuzel tady je to potreba takto napsat kvuli navratove hodnote CreateAsync, proc nemam tuseni, nelibi se mu to Async v nazvu - viz debata v sekci otazky
     public async Task<IActionResult> GetByIdAsync(int toDoItemId)
     {
         try
