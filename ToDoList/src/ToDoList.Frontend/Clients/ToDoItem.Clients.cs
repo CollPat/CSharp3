@@ -3,7 +3,7 @@ using ToDoList.Domain.DTOs;
 using ToDoList.Frontend.Clients;
 using ToDoList.Frontend.Views;
 
-public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient //primary constructor
+public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
 {
     public async Task CreateItemAsync(ToDoItemView itemView)
     {
@@ -65,6 +65,7 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient //primary
                 Name = response.Name,
                 Description = response.Description,
                 IsCompleted = response.IsCompleted,
+                Category = response.Category,
             };
         }
         catch (Exception e)
@@ -90,7 +91,8 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient //primary
                 ToDoItemId = dto.Id,
                 Name = dto.Name,
                 Description = dto.Description,
-                IsCompleted = dto.IsCompleted
+                IsCompleted = dto.IsCompleted,
+                Category = dto.Category
             }).ToList();
         }
         catch (Exception e)
