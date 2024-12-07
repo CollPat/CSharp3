@@ -3,7 +3,7 @@ namespace ToDoList.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.Models;
 
-public class ToDoItemsRepository : IRepository<ToDoItem>
+public class ToDoItemsRepository : IRepositoryAsync<ToDoItem>
 {
     private readonly ToDoItemsContext context;
 
@@ -42,5 +42,7 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
             await context.SaveChangesAsync();
         }
     }
+
+    public Task DeleteByIdAsync(ToDoItem item) => throw new NotImplementedException();
 }
 

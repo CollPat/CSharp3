@@ -1,11 +1,11 @@
-﻿@page "/editToDoItem/{ItemId:int}"
+﻿@page "/editToDoItem/{ItemId:int?}"
 @using ToDoList.Frontend.Views
 @using ToDoList.Frontend.Clients
 @inject NavigationManager NavigationManager
 @inject IToDoItemsClient ToDoItemsClient
 @rendermode InteractiveServer
 
-<PageTitle>Edit To Do Item</PageTitle>
+<PageTitle>@(IsNewItem ? "Add New To Do Item" : "Edit To Do Item")</PageTitle>
 
 @if (ToDoItem is not null)
 {
@@ -22,23 +22,60 @@
         <ValidationMessage For="() => ToDoItem.IsCompleted" />
         <label for="Category" class="form-label">Category:</label>
         <InputText id="Category" class="form-control" @bind-Value="ToDoItem.Category" />
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary">@SubmitButtonText</button>
+        <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
     </EditForm>
 }
 
 @code
 {
-    protected override async Task OnInitializedAsync()
-    {
-        ToDoItem = await ToDoItemsClient.ReadItemByIdAsync(ItemId);
-    }
     [Parameter]
     public int ItemId { get; set; }
-    [SupplyParameterFromForm]
+
     public ToDoItemView ToDoItem { get; set; }
+    private bool IsNewItem => ItemId == 0;
+    private string SubmitButtonText => IsNewItem ? "Add Item" : "Save Changes";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsNewItem)
+        {
+
+            ToDoItem = new ToDoItemView
+                {
+                    Name = string.Empty,
+                    Description = string.Empty,
+                    IsCompleted = false,
+                    Category = string.Empty
+                };
+        }
+        else
+        {
+
+            ToDoItem = await ToDoItemsClient.ReadItemByIdAsync(ItemId);
+        }
+    }
+
     public async Task Submit()
     {
-        await ToDoItemsClient.UpdateItemAsync(ToDoItem);
-        NavigationManager.NavigateTo("/");
+        if (IsNewItem)
+        {
+
+            await ToDoItemsClient.CreateItemAsync(ToDoItem);
+        }
+        else
+        {
+
+            await ToDoItemsClient.UpdateItemAsync(ToDoItem);
+        }
+
+
+        NavigationManager.NavigateTo("/dashboard");
+    }
+
+    private void Cancel()
+    {
+
+        NavigationManager.NavigateTo("/dashboard");
     }
 }

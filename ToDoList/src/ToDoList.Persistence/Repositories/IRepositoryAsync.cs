@@ -10,6 +10,5 @@ namespace ToDoList.Persistence.Repositories
         Task CreateAsync(T item);
         Task UpdateAsync(T item);
         Task DeleteAsync(T item);
-        Task DeleteByIdAsync(T item);
     }
 }
