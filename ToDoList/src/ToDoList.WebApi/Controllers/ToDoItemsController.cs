@@ -9,12 +9,12 @@ using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerBase
+public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : ControllerBase
 
 
 {
 
-    private readonly IRepository<ToDoItem> repository = repository;
+    private readonly IRepositoryAsync<ToDoItem> repository = repository;
 
     [HttpPost]
     public async Task<IActionResult> CreateAsync(ToDoItemsCreateRequestDto request)
@@ -55,7 +55,7 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
     }
 
     [HttpGet("{toDoItemId:int}")]
-    [ActionName(nameof(GetByIdAsync))] //bohuzel tady je to potreba takto napsat kvuli navratove hodnote CreateAsync, proc nemam tuseni, nelibi se mu to Async v nazvu - viz debata v sekci otazky
+    [ActionName(nameof(GetByIdAsync))]
     public async Task<IActionResult> GetByIdAsync(int toDoItemId)
     {
         try

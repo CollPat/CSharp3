@@ -16,7 +16,7 @@ public class GetTests
     public async void Get_SomeItemsAvailable_ReturnsAllItems()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
         var toDoItem = new ToDoItem
         {
@@ -55,7 +55,7 @@ public class GetTests
     public async Task Get_NoItems_ReturnsNotFoundAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
         repositoryMock.GetAllAsync().Returns(new List<ToDoItem>());
 
@@ -72,7 +72,7 @@ public class GetTests
     public async Task Get_ReadUnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         repositoryMock.GetAllAsync().Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);

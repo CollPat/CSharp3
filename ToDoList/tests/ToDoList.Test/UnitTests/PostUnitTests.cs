@@ -16,7 +16,7 @@ public class PostUnitTests
     public async Task Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var request = new ToDoItemsCreateRequestDto(
@@ -43,20 +43,22 @@ public class PostUnitTests
 
 
 
-    [Fact]
-    public async Task Post_CreateUnhandledException_ReturnsInternalServerError()
+    [Theory]
+    [InlineData("Work")]
+    [InlineData(null)]
+    public async void Post_CreateUnhandledException_ReturnsInternalServerError(string category)
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         repositoryMock.When(repo => repo.CreateAsync(Arg.Any<ToDoItem>())).Throw(new Exception("Unhandled exception"));
 
         var controller = new ToDoItemsController(repositoryMock);
 
         var request = new ToDoItemsCreateRequestDto(
-            Name: "Name",
-            Description: "Description",
+            Name: "Test Name",
+            Description: "Test Description",
             IsCompleted: false,
-            Category: "Work"
+            Category: category
         );
 
         // Act
@@ -71,6 +73,5 @@ public class PostUnitTests
 
         await repositoryMock.Received(1).CreateAsync(Arg.Any<ToDoItem>());
     }
-
 }
 

@@ -13,7 +13,7 @@ public class DeleteTests
     public async Task Delete_ValidItemId_ReturnsNoContentAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItem = new ToDoItem
@@ -42,7 +42,7 @@ public class DeleteTests
     public async Task Delete_InvalidId_ReturnsNotFoundAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var invalidId = -1;
@@ -61,7 +61,7 @@ public class DeleteTests
     public async Task Delete_UnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItemId = 1;
@@ -76,5 +76,4 @@ public class DeleteTests
         await repositoryMock.Received(1).GetByIdAsync(toDoItemId);
         await repositoryMock.DidNotReceive().DeleteAsync(Arg.Any<ToDoItem>());
     }
-
 }

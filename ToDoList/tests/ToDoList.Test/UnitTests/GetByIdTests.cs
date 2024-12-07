@@ -16,7 +16,7 @@ public class GetByIdTests
     public async Task GetById_ValidId_ReturnsItemAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItem = new ToDoItem
@@ -47,7 +47,7 @@ public class GetByIdTests
     public async Task GetById_InvalidId_ReturnsNotFoundAsync()
     {
         //Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
 
         var invalidId = -1;
@@ -63,7 +63,7 @@ public class GetByIdTests
     public async Task Get_ByIdUnhandledException_ReturnsInternalServerErrorAsync()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         repositoryMock.GetByIdAsync(Arg.Any<int>()).Throws(x => { throw new Exception("Unhandled exception"); });
 
         var controller = new ToDoItemsController(repositoryMock);
@@ -79,4 +79,47 @@ public class GetByIdTests
         Assert.Equal("Unhandled exception", problemDetails.Detail);
     }
 
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(999, false)]
+
+    public void GetById_ReturnsExpectedResult(int toDoItemId, bool exists)
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
+        if (exists)
+        {
+            repositoryMock.GetByIdAsync(toDoItemId).Returns(new ToDoItem
+            {
+                ToDoItemId = toDoItemId,
+                Name = "Test Name",
+                Description = "Test Description",
+                IsCompleted = false,
+                Category = "Work"
+            });
+        }
+        else
+        {
+            repositoryMock.GetByIdAsync(toDoItemId).Returns((ToDoItem)null);
+        }
+
+        var controller = new ToDoItemsController(repositoryMock);
+
+        // Act
+        var result = controller.GetByIdAsync(toDoItemId);
+
+        // Assert
+        if (exists)
+        {
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var item = Assert.IsType<ToDoItem>(okResult.Value);
+            Assert.Equal(toDoItemId, item.ToDoItemId);
+        }
+        else
+        {
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        repositoryMock.Received(1).GetByIdAsync(toDoItemId);
+    }
 }
